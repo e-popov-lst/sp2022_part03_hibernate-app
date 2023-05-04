@@ -7,12 +7,9 @@ import org.hibernate.cfg.Configuration;
 
 /**
  * Hello world!
- *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main(String[] args) {
         Configuration configuration = new Configuration().addAnnotatedClass(Person.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -21,15 +18,19 @@ public class App
         try {
             session.beginTransaction();
 
-            Person person1 = new Person("Test1", 30);
-            Person person2 = new Person("Test2", 40);
-            Person person3 = new Person("Test3", 50);
+            Person person1 = session.get(Person.class, 2);
+            person1.setName("New name3");
 
-            session.save(person1);
-            session.save(person2);
+            Person person2 = session.get(Person.class, 3);
+            if (person2 != null)
+                session.delete(person2);
+
+            Person person3 = new Person("Some name", 60);
             session.save(person3);
 
             session.getTransaction().commit();
+
+            System.out.println("person3.id = " + person3.getId());
         } finally {
             sessionFactory.close();
         }
